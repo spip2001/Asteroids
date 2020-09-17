@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://player/shot.png" type="Texture" id=1]
+[ext_resource path="res://player/Shot.gd" type="Script" id=2]
+[ext_resource path="res://Sounds/Laser_Shoot.wav" type="AudioStream" id=3]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 1.64587
+height = 4.29567
+
+[node name="PlayerShot" type="Area2D" groups=[
+"PlayserShot",
+]]
+script = ExtResource( 2 )
+
+[node name="shot" type="Sprite" parent="." groups=[
+"PlayerShot",
+]]
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
+position = Vector2( 2.38419e-07, 0.0992138 )
+scale = Vector2( 0.325354, 0.494016 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="ShotSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )
+[connection signal="area_entered" from="." to="." method="_on_PlayerShot_area_entered"]
+[connection signal="viewport_exited" from="VisibilityNotifier2D" to="." method="_on_viewport_exited"]

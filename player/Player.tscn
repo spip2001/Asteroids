@@ -1,0 +1,196 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://player/Player.gd" type="Script" id=1]
+[ext_resource path="res://player/player.png" type="Texture" id=2]
+[ext_resource path="res://player/shield.png" type="Texture" id=3]
+[ext_resource path="res://player/Shield.gd" type="Script" id=4]
+[ext_resource path="res://Sounds/Powerup.wav" type="AudioStream" id=5]
+[ext_resource path="res://player/DoubleShot.gd" type="Script" id=6]
+[ext_resource path="res://player/Upgrade.gd" type="Script" id=7]
+[ext_resource path="res://player/sattelite.png" type="Texture" id=8]
+[ext_resource path="res://player/Sattelite.gd" type="Script" id=9]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Idle"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Rect2( 0, 0, 16, 16 ), Rect2( 0, 0, 16, 16 ) ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "turning"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ Rect2( 16, 0, 16, 16 ), Rect2( 16, 0, 16, 16 ) ]
+}
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "Idle"
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "turning"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=5]
+switch_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=6]
+switch_mode = 1
+
+[sub_resource type="AnimationNodeStateMachine" id=7]
+states/Idle/node = SubResource( 3 )
+states/Idle/position = Vector2( -705.673, -166 )
+states/turning/node = SubResource( 4 )
+states/turning/position = Vector2( -513.673, -166 )
+transitions = [ "Idle", "turning", SubResource( 5 ), "turning", "Idle", SubResource( 6 ) ]
+start_node = "Idle"
+graph_offset = Vector2( -1286.67, -262 )
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=8]
+
+[sub_resource type="CircleShape2D" id=9]
+radius = 4.04022
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 8 )
+region = Rect2( 0, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 8 )
+region = Rect2( 8, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 8 )
+region = Rect2( 16, 0, 8, 8 )
+
+[sub_resource type="SpriteFrames" id=13]
+animations = [ {
+"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="CircleShape2D" id=14]
+radius = 3.23478
+
+[node name="Player" type="Area2D" groups=[
+"Player",
+]]
+position = Vector2( 80.4602, 130.069 )
+script = ExtResource( 1 )
+MAX_SPEED = 100
+ACC = 100
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 16, 16 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite"]
+anims/Idle = SubResource( 1 )
+anims/turning = SubResource( 2 )
+
+[node name="AnimationTree" type="AnimationTree" parent="Sprite"]
+tree_root = SubResource( 7 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/playback = SubResource( 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 9 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Upgrade" type="Node2D" parent="."]
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Shield" type="Node2D" parent="Upgrade"]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Shield" type="Sprite" parent="Upgrade/Shield"]
+texture = ExtResource( 3 )
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="DoubleShot" type="Node2D" parent="Upgrade"]
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Sattelite" type="Area2D" parent="Upgrade"]
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Sattelite" type="AnimatedSprite" parent="Upgrade/Sattelite"]
+frames = SubResource( 13 )
+frame = 2
+playing = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Upgrade/Sattelite"]
+shape = SubResource( 14 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Sattelite2" type="Area2D" parent="Upgrade"]
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_lock_": true
+}
+R = -24
+
+[node name="Sattelite" type="AnimatedSprite" parent="Upgrade/Sattelite2"]
+frames = SubResource( 13 )
+frame = 1
+playing = true
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Upgrade/Sattelite2"]
+shape = SubResource( 14 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="PowerUpPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 5 )
+__meta__ = {
+"_edit_lock_": true
+}
+[connection signal="area_entered" from="." to="." method="_on_Player_area_entered"]
+[connection signal="area_entered" from="Upgrade/Sattelite" to="Upgrade/Sattelite" method="_on_Sattelite_area_entered"]
+[connection signal="area_entered" from="Upgrade/Sattelite2" to="Upgrade/Sattelite2" method="_on_Sattelite_area_entered"]
